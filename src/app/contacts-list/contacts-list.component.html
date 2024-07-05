@@ -1,0 +1,42 @@
+<div class="contact-list-container">
+  <!-- Кнопка для додавання нового контакту -->
+  <button mat-flat-button color="primary" [routerLink]="['/contacts/new']" class="add-contact-button">
+    Add contact
+  </button>
+  
+  
+  <!-- Поле пошуку -->
+  <mat-form-field appearance="fill" class="search-field">
+    <mat-label>Search Contacts</mat-label>
+    <input matInput [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Enter name or phone number">
+    <button mat-icon-button matSuffix *ngIf="searchTerm" (click)="clearSearch()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <!-- Кнопка для зміни порядку сортування -->
+  <button mat-icon-button matTooltip="Sort by name" (click)="toggleSortOrder()" class="sort-button">
+    <mat-icon>sort_by_alpha</mat-icon>
+  </button>
+
+  <!-- Список контактів -->
+  <div *ngIf="filteredContacts.length > 0; else noContacts" class="contacts-list">
+    <mat-card *ngFor="let contact of filteredContacts" class="contact-card">
+      <mat-card-title class="contact-name">{{ contact.firstName }} {{ contact.lastName }}</mat-card-title>
+      <mat-card-content>
+        <p>{{ contact.phoneNumber }}</p>
+      </mat-card-content>
+      <mat-card-actions class="mat-card-actions">
+        <button mat-stroked-button color="primary" [routerLink]="['/contact', contact.id]">View</button>
+        <button mat-stroked-button color="primary" [routerLink]="['/contacts/edit', contact.id]">Edit</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Повідомлення, якщо немає контактів -->
+  <ng-template #noContacts>
+    <p>No contacts available.</p>
+  </ng-template>
+
+  
+</div>

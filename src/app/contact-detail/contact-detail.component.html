@@ -1,0 +1,16 @@
+<mat-card *ngIf="contact" class="contact-detail-card">
+  <mat-card-header>
+    <mat-card-title>{{ contact.firstName }} {{ contact.lastName }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p><strong>Phone Number:</strong> {{ contact.phoneNumber }}</p>
+    <p><strong>Email:</strong> {{ contact.email }}</p>
+    <p><strong>Birth Date:</strong> {{ contact.birthDate | date: 'dd MMMM yyyy' }}</p>
+    <p><strong>Address:</strong> {{ contact.address }}</p>
+  </mat-card-content>
+  <mat-card-actions class="mat-card-actions">
+    <button mat-raised-button color="primary" [routerLink]="['/contacts/edit', contact.id]">Edit</button>
+    <button mat-raised-button color="warn" (click)="deleteContact()">Delete</button>
+    <button mat-raised-button (click)="goBackToList()">Back to Contacts</button>
+  </mat-card-actions>
+</mat-card>

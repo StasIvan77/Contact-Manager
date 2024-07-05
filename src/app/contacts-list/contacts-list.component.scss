@@ -1,0 +1,58 @@
+
+
+
+  .contact-name {
+    margin: 10px;    
+  }
+  
+  .contact-list-container {
+    max-width: 600px; 
+    margin: auto; 
+    padding: 16px; 
+  }
+  
+  .search-field {
+    width: 100%; 
+  }
+  
+  .sort-button {
+    margin-left: auto;
+  }
+  
+  .contacts-list {
+    overflow-y: auto;
+  }
+  
+  .contact-card {
+    margin-bottom: 10px;
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .add-contact-button {
+    margin-left: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #2196f3;
+    color: white;
+    font-size: 18px;
+    padding: 12px 24px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-contact-button:hover {
+    background-color: #1976d2; 
+    cursor: pointer;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+    .mat-card-actions {
+        display: flex;
+        justify-content: flex-start; 
+        gap: 10px;
+        margin-top: 10px;
+      }
+      
