@@ -39,7 +39,8 @@
     <input matInput
            type="text"
            formControlName="phoneNumber"
-           placeholder="Your Phone Number">
+           placeholder="Your Phone Number"
+           pattern="[0-9]*"b>
     <mat-error *ngIf="contactForm.get('phoneNumber')?.hasError('required')">
       Phone number is required
     </mat-error>
