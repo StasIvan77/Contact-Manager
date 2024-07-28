@@ -2,15 +2,15 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ContactService } from '../shared/contact.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
-import { MatIconModule } from '@angular/material/icon'; // Імпорт модуля для mat-icon
-import { MatDatepickerModule } from '@angular/material/datepicker'; // Імпорт модуля для datepicker
-import { MatNativeDateModule } from '@angular/material/core'; // Імпорт модуля для native date
+import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { Subject, merge } from 'rxjs';
+import { Subject, merge, fromEvent } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -18,40 +18,43 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './contact-add.component.html',
   styleUrls: ['./contact-add.component.scss'],
   standalone: true,
-  imports: [MatFormFieldModule,
+  imports: [
+    MatFormFieldModule,
     MatInputModule,
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
-    FormsModule, ReactiveFormsModule, CommonModule,
-    MatButtonModule]
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    MatButtonModule
+  ]
 })
-export class ContactAddComponent implements OnInit, OnDestroy  {
+export class ContactAddComponent implements OnInit, OnDestroy {
   contactForm!: FormGroup;
   private destroy$ = new Subject<void>();
 
-  errorMessage: string = '';
+  errorMessages: { [key: string]: string } = {};
   isEditMode: boolean = false;
   contactId?: string | null;
-
 
   constructor(
     private contactService: ContactService,
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder) {
-      // Ініціалізація `FormGroup` з усіма необхідними полями
-      this.contactForm = this.fb.group({
-        id: [{ value: '', disabled: true }],
-        firstName: ['', Validators.required],
-        lastName: ['', Validators.required],
-        phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-        email: ['', [Validators.required, Validators.email]],
-        birthDate: ['', Validators.required],
-        address: ['', Validators.required]
-      });
-    }
+    private fb: FormBuilder
+  ) {
+    this.contactForm = this.fb.group({
+      id: [{ value: '', disabled: true }],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      birthDate: ['', Validators.required],
+      address: ['', Validators.required]
+    });
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -61,12 +64,114 @@ export class ContactAddComponent implements OnInit, OnDestroy  {
         this.populateForm(this.contactId);
       }
     });
-    merge(
-      this.contactForm.get('email')!.statusChanges,
-      this.contactForm.get('email')!.valueChanges
-    )
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(() => this.updateErrorMessage());
+
+    this.subscribeToFormChanges();
+    this.addBlurAndInputEventListeners();
+  }
+
+  subscribeToFormChanges(): void {
+    const controls = this.contactForm.controls;
+    const controlObservables = [];
+
+    for (const controlName in controls) {
+      if (controls.hasOwnProperty(controlName)) {
+        const control = controls[controlName];
+        controlObservables.push(
+          merge(
+            control.statusChanges,
+            control.valueChanges
+          )
+        );
+      }
+    }
+
+    merge(...controlObservables)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateErrorMessages());
+  }
+
+  addBlurAndInputEventListeners(): void {
+    const controls = ['firstName', 'lastName', 'email', 'phoneNumber', 'birthDate', 'address'];
+
+    controls.forEach(controlName => {
+      const input = document.querySelector(`input[formControlName="${controlName}"]`);
+      const textarea = document.querySelector(`textarea[formControlName="${controlName}"]`);
+      const select = document.querySelector(`select[formControlName="${controlName}"]`);
+
+      if (input) {
+        fromEvent(input, 'blur')
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => this.updateErrorMessages());
+        fromEvent(input, 'input')
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => this.updateErrorMessages());
+      }
+      
+      if (textarea) {
+        fromEvent(textarea, 'blur')
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => this.updateErrorMessages());
+        fromEvent(textarea, 'input')
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => this.updateErrorMessages());
+      }
+
+      if (select) {
+        fromEvent(select, 'blur')
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => this.updateErrorMessages());
+        fromEvent(select, 'change')
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => this.updateErrorMessages());
+      }
+    });
+  }
+
+  updateErrorMessages(): void {
+    const controls = ['firstName', 'lastName', 'email', 'phoneNumber', 'birthDate', 'address'];
+    const errorMessages: { [key: string]: string } = {};
+
+    controls.forEach(controlName => {
+      const control = this.contactForm.get(controlName);
+      if (control && control.invalid && (control.dirty || control.touched)) {
+        if (control.hasError('required')) {
+          errorMessages[controlName] = `${this.getLabel(controlName)} is required`;
+        } else if (control.hasError('email')) {
+          errorMessages[controlName] = 'Not a valid email';
+        } else if (control.hasError('pattern') && controlName === 'phoneNumber') {
+          errorMessages[controlName] = 'Phone number must be 10 digits';
+        } else if (control.hasError('minlength') && control.errors) {
+          errorMessages[controlName] = `Minimum length is ${control.errors['minlength'].requiredLength}`;
+        } else if (control.hasError('maxlength') && control.errors) {
+          errorMessages[controlName] = `Maximum length is ${control.errors['maxlength'].requiredLength}`;
+        } else {
+          errorMessages[controlName] = ''; // Clear message if no errors
+        }
+      } else {
+        errorMessages[controlName] = ''; // Clear message if no errors
+      }
+    });
+
+    this.errorMessages = errorMessages;
+  }
+
+  getLabel(controlName: string): string {
+    switch (controlName) {
+      case 'firstName':
+        return 'First Name';
+      case 'lastName':
+        return 'Last Name';
+      case 'email':
+        return 'Email';
+      case 'phoneNumber':
+        return 'Phone Number';
+      case 'birthDate':
+        return 'Birth Date';
+      case 'address':
+        return 'Address';
+      default:
+        return '';
+    }
   }
 
   populateForm(contactId: string): void {
@@ -81,39 +186,23 @@ export class ContactAddComponent implements OnInit, OnDestroy  {
         birthDate: contact.birthDate,
         address: contact.address
       });
-    } else {
-      // Обробка випадку, коли контакт не знайдено
     }
   }
 
-  // Метод для оновлення повідомлень про помилки для поля email
-  updateErrorMessage() {
-    const emailControl = this.contactForm.get('email');
-    if (emailControl?.hasError('required')) {
-      this.errorMessage = 'You must enter a value';
-    } else if (emailControl?.hasError('email')) {
-      this.errorMessage = 'Not a valid email';
-    } else {
-      this.errorMessage = '';
-    }
-  }
-
-  // Метод для додавання контакту
   saveContact(): void {
     if (this.contactForm.valid) {
       const formData = this.contactForm.getRawValue();
       if (this.isEditMode && this.contactId) {
-        // Редагуємо існуючий контакт
         this.contactService.updateContact({ ...formData, id: this.contactId });
       } else {
-        // Додаємо новий контакт
         this.contactService.addContact(formData);
       }
       this.router.navigate(['/contacts']);
+    } else {
+      this.updateErrorMessages();
     }
   }
 
-  // Метод для відміни додавання контакту
   cancel(): void {
     this.router.navigate(['/contacts']);
   }
@@ -122,5 +211,4 @@ export class ContactAddComponent implements OnInit, OnDestroy  {
     this.destroy$.next();
     this.destroy$.complete();
   }
-  
 }

@@ -7,8 +7,8 @@
            placeholder="Your First Name"
            formControlName="firstName"
            required>
-    <mat-error *ngIf="contactForm.get('firstName')?.invalid && (contactForm.get('firstName')?.dirty || contactForm.get('firstName')?.touched)">
-      First Name is required
+    <mat-error *ngIf="errorMessages['firstName']">
+      {{ errorMessages['firstName'] }}
     </mat-error>
   </mat-form-field>
 
@@ -18,8 +18,8 @@
            placeholder="Your Last Name"
            formControlName="lastName"
            required>
-    <mat-error *ngIf="contactForm.get('lastName')?.invalid && (contactForm.get('lastName')?.dirty || contactForm.get('lastName')?.touched)">
-      Last Name is required
+    <mat-error *ngIf="errorMessages['lastName']">
+      {{ errorMessages['lastName'] }}
     </mat-error>
   </mat-form-field>
 
@@ -29,8 +29,8 @@
            placeholder="mail@example.com"
            formControlName="email"
            required>
-    <mat-error *ngIf="contactForm.get('email')?.invalid && (contactForm.get('email')?.dirty || contactForm.get('email')?.touched)">
-      Email is required
+    <mat-error *ngIf="errorMessages['email']">
+      {{ errorMessages['email'] }}
     </mat-error>
   </mat-form-field>
 
@@ -40,22 +40,19 @@
            type="text"
            formControlName="phoneNumber"
            placeholder="Your Phone Number"
-           pattern="[0-9]*"b>
-    <mat-error *ngIf="contactForm.get('phoneNumber')?.hasError('required')">
-      Phone number is required
-    </mat-error>
-    <mat-error *ngIf="contactForm.get('phoneNumber')?.hasError('pattern')">
-      Phone number must be 10 digits
+           pattern="[0-9]*">
+    <mat-error *ngIf="errorMessages['phoneNumber']">
+      {{ errorMessages['phoneNumber'] }}
     </mat-error>
   </mat-form-field>
   
   <mat-form-field appearance="fill" class="form-field">
-    <mat-label>Select birth date</mat-label>
+    <mat-label>Select Birth Date</mat-label>
     <input matInput [matDatepicker]="picker" formControlName="birthDate" placeholder="mm/dd/yyyy">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
-    <mat-error *ngIf="contactForm.get('birthDate')?.invalid && (contactForm.get('birthDate')?.dirty || contactForm.get('birthDate')?.touched)">
-      Birth date is required
+    <mat-error *ngIf="errorMessages['birthDate']">
+      {{ errorMessages['birthDate'] }}
     </mat-error>
   </mat-form-field>
 
@@ -65,8 +62,8 @@
            type="text"
            formControlName="address"
            placeholder="Your Address">
-    <mat-error *ngIf="contactForm.get('address')?.invalid && (contactForm.get('address')?.dirty || contactForm.get('address')?.touched)">
-      Address is required
+    <mat-error *ngIf="errorMessages['address']">
+      {{ errorMessages['address'] }}
     </mat-error>
   </mat-form-field>
 

@@ -1,58 +1,73 @@
+$card-width: 400px;
+$action-gap: 10px;
+$action-margin-top: 10px;
+$container-max-width: 600px;
+$container-padding: 16px;
+$card-margin-bottom: 10px;
+$card-padding: 10px;
+$card-border-color: #ccc;
+$card-border-radius: 8px;
+$card-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+$button-bg-color: #2196f3;
+$button-bg-hover-color: #1976d2;
+$button-text-color: white;
+$button-font-size: 18px;
+$button-padding: 12px 24px;
+$button-border-radius: 5px;
+$button-transition: background-color 0.3s ease;
+$button-box-shadow-hover: 0px 2px 4px rgba(0, 0, 0, 0.2);
 
+.contact-name {
+  margin: 10px;
+}
 
+.contact-list-container {
+  max-width: $container-max-width;
+  margin: auto;
+  padding: $container-padding;
+}
 
-  .contact-name {
-    margin: 10px;    
-  }
-  
-  .contact-list-container {
-    max-width: 600px; 
-    margin: auto; 
-    padding: 16px; 
-  }
-  
-  .search-field {
-    width: 100%; 
-  }
-  
-  .sort-button {
-    margin-left: auto;
-  }
-  
-  .contacts-list {
-    overflow-y: auto;
-  }
-  
-  .contact-card {
-    margin-bottom: 10px;
-    padding: 10px; 
-    border: 1px solid #ccc; 
-    border-radius: 8px; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-  }
-  
-  .add-contact-button {
-    margin-left: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-color: #2196f3;
-    color: white;
-    font-size: 18px;
-    padding: 12px 24px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .add-contact-button:hover {
-    background-color: #1976d2; 
+.search-field {
+  width: 100%;
+}
+
+.sort-button {
+  margin-left: auto;
+}
+
+.contacts-list {
+  overflow-y: auto;
+}
+
+.contact-card {
+  margin-bottom: $card-margin-bottom;
+  padding: $card-padding;
+  border: 1px solid $card-border-color;
+  border-radius: $card-border-radius;
+  box-shadow: $card-box-shadow;
+}
+
+.add-contact-button {
+  margin-left: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: $button-bg-color;
+  color: $button-text-color;
+  font-size: $button-font-size;
+  padding: $button-padding;
+  border-radius: $button-border-radius;
+  transition: $button-transition;
+
+  &:hover {
+    background-color: $button-bg-hover-color;
     cursor: pointer;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: $button-box-shadow-hover;
   }
+}
 
-    .mat-card-actions {
-        display: flex;
-        justify-content: flex-start; 
-        gap: 10px;
-        margin-top: 10px;
-      }
-      
+.mat-card-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: $action-gap;
+  margin-top: $action-margin-top;
+}

@@ -1,12 +1,15 @@
+$card-width: 400px;
+$action-gap: 10px;
+$action-margin-top: 10px;
+
 .contact-detail-card {
-    width: 400px;
-    margin: auto; 
-  }
-  
-  .mat-card-actions {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px; 
-    margin-top: 10px; 
-  }
-  
+  width: $card-width;
+  margin: auto;
+}
+
+.mat-card-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: $action-gap;
+  margin-top: $action-margin-top;
+}

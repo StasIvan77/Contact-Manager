@@ -1,15 +1,16 @@
+$form-container-margin-top: 20px;
+
 .form-container {
-    display: flex;
-    flex-direction: column;
-  }
-  
+  display: flex;
+  flex-direction: column;
+
   .form-field {
     width: 100%;
   }
-  
+
   .button-container {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: $form-container-margin-top;
   }
-  
+}

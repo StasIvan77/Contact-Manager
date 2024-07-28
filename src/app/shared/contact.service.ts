@@ -20,6 +20,7 @@ export class ContactService {
 
    private initializeContacts(): void {
     const storedContacts = localStorage.getItem(this.localStorageKey);
+    //corrected mock data here
     if (!storedContacts) {
       // Зберігаємо початкові контакти в Local Storage, якщо вони відсутні або порожні
       this.saveContactsToLocalStorage(this.initialContacts);
